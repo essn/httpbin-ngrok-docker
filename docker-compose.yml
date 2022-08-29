@@ -1,0 +1,22 @@
+version: '2'
+services:
+    httpbin:
+      image: kennethreitz/httpbin
+    ngrok:
+      image: wernight/ngrok
+      ports:
+      - "4040:4040"
+      links:
+        - httpbin
+      environment:
+        - NGROK_AUTH="${NGROK_AUTH}"
+        - NGROK_PORT=httpbin:80
+    launchpad:
+      image: php:buster
+      command: php -S 0.0.0.0:3030 /app/index.php
+      ports:
+        - "3030:3030"
+      volumes:
+        - ./modules/launchpad:/app
+      links:
+        - ngrok
